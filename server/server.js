@@ -1,3 +1,4 @@
+const dotenv = require('dotenv').config();
 const express = require('express');
 //const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -9,8 +10,8 @@ const noteRouter = require('./routes/note');
 const userRouter = require('./routes/user');
 const { User } = require('./models/bananaModels');
 
-const GITHUB_CLIENT_ID = "8c77f6a2d43001a9a61a";
-const GITHUB_CLIENT_SECRET = "a496fe3e546dff0a671b1b01a4d04a2f6d155561";
+const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
 // Initiate app 
 const app = express();
@@ -20,7 +21,7 @@ passport.use(new GitHubStrategy(
   {
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:8080/api/user/auth/github/callback"
+    //callbackURL: "http://localhost:8080/api/user/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     console.log(' we are in the the passport.use callback');

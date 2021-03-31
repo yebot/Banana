@@ -1,6 +1,7 @@
+//const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
 
-const MONGO_URI = 'mongodb+srv://yebot-codesmith:FQ61XTbtbrGP7Ums@codesmith1.euzn2.mongodb.net/banana?retryWrites=true&w=majority';
+const MONGO_URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
