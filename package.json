@@ -1,0 +1,44 @@
+{
+  "name": "banana",
+  "version": "1.0.0",
+  "description": "because all need another notes app",
+  "main": "server.js",
+  "scripts": {
+    "dev": "NODE_ENV=development webpack-dev-server --open",
+    "build": "NODE_ENV=production PORT=5000 webpack",
+    "start": "NODE_ENV=production npx nodemon server/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yebot",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "js-cookie": "^2.2.1",
+    "mongoose": "^5.12.2",
+    "passport": "^0.4.1",
+    "passport-github": "^1.1.0",
+    "passport-github2": "^0.1.12",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-react": "^7.13.13",
+    "@webpack-cli/serve": "^1.0.1-alpha.5",
+    "babel-loader": "^8.2.2",
+    "nodemon": "^2.0.7",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.9",
+    "webpack-hot-middleware": "^2.24.3"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "client/*"
+    ]
+  }
+}
