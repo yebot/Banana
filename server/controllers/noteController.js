@@ -7,6 +7,22 @@ noteController.getNotes = (req, res, next) => {
   next();
 }
 
+
+noteController.getNotesByAuthor = (req, res, next) => {
+  console.log('we are in noteController.getNotesByAuthor');
+  console.log(req.params.author_id);
+  const filter = { author_id: req.params.author_id };
+  try {
+    Note.find(filter, function (err, docs) {
+      //res.status(200).json(docs);
+      res.locals = docs;
+      next();
+    });
+  } catch (err) {
+    next({err: err});
+  }
+}
+
 noteController.createNote = (req, res, next) => {
   const newNote = { 
     content: req.body.content, 
@@ -48,7 +64,6 @@ noteController.updateNote = (req, res, next) => {
       next({err});
     }
   });
-
 }
 
 noteController.deleteNote = (req, res, next) => {
@@ -62,6 +77,19 @@ noteController.deleteNote = (req, res, next) => {
       next({ log: err, message: { err: err } });
     }
   })
+}
+
+noteController.deleteAllNotesByAuthor = (req, res, next) => {
+  const filter = { author_id: req.params.author_id };
+  try {
+    Note.deleteMany(filter, (err, result) => {
+      console.log(result);
+      res.locals = result;
+      next();
+    });
+  } catch (err) {
+    next({err: err});
+  }
 }
 
 module.exports = noteController;

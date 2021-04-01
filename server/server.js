@@ -1,40 +1,34 @@
 const dotenv = require('dotenv').config();
 const express = require('express');
-//const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const passport = require('passport');
-const GitHubStrategy = require('passport-github2').Strategy;
+const session = require('express-session');
+require('./passport.js')(passport);
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo')(session);
 const noteRouter = require('./routes/note');
 const userRouter = require('./routes/user');
-const { User } = require('./models/bananaModels');
+const authRouter = require('./routes/auth');
 
-const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
 // Initiate app 
 const app = express();
 
-// Passport
-passport.use(new GitHubStrategy(
+// express session
+app.use(session(
   {
-    clientID: GITHUB_CLIENT_ID,
-    clientSecret: GITHUB_CLIENT_SECRET,
-    //callbackURL: "http://localhost:8080/api/user/auth/github/callback"
-  },
-  function(accessToken, refreshToken, profile, done) {
-    console.log(' we are in the the passport.use callback');
-    const newUser = {
-      githubAccessToken: accessToken,
-      githubProfileId: profile._json.id,
-      oauthProfile: profile._json
-    };
-    //console.log(newUser);
-    new User(newUser).save();
-    return done(null);
-  })
-);
+    secret: 'xqvVLGSYIFZvCBJO',
+    resave: false,
+    saveUninitialized: false,
+    store: new MongoStore({ mongooseConnection: mongoose.connection })
+  }
+));
+
+// Pssport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 //var corsOptions = {
 //  origin: "http://localhost:8081"
@@ -47,11 +41,16 @@ passport.use(new GitHubStrategy(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+
 /**
  * define route handlers
  */
-app.use('/api/user', userRouter);
+
+
+app.use('/user', userRouter);
 app.use('/api/note', noteRouter);
+app.use('/auth', authRouter);
 //app.use('/user', userRouter);
 //app.use('/api/fail', (req, res) => {
 //  res.json({ message: "ummm /api/fail" });
@@ -59,8 +58,13 @@ app.use('/api/note', noteRouter);
 
 
 // simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to b.a.n.a.n.a. (server.js)" });
+app.get('/test', (req, res) => {
+  console.log('here we are in /test!!!');
+    // Cookies that have not been signed
+    console.log('Cookies: ', req.cookies)
+    // Cookies that have been signed
+    console.log('Signed Cookies: ', req.signedCookies)
+  //res.json({ message: "Welcome to b.a.n.a.n.a. (server.js)" });
 });
 
 // catch-all route handler for any requests to an unknown route

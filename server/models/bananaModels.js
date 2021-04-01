@@ -7,7 +7,7 @@ mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
-  dbName: 'banana'
+  dbName: process.env.DB_NAME
 })
   .then(() => console.log('Connected to Mongo DB.'))
   .catch(err => console.log(err));
@@ -53,8 +53,16 @@ const Session = mongoose.model('sessions', sessionSchema);
 const userSchema = new Schema({
   //email: { type: String },
   githubAccessToken: String,
-  oauthProfile: Object
+  githubId: { type: String, required: true, unique: true, },
+  oauthProfile: Object,
+  created_at: { type: Date, default: Date.now },
+  modified_at: { type: Date, default: Date.now },
 });
+userSchema.pre('findOneAndUpdate', function preSave(next) {
+  this._update.modified_at = Date.now();
+  next();
+});
+
 const User = mongoose.model('users', userSchema);
 
 

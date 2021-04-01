@@ -2,7 +2,7 @@ import React from 'react';
 
 const Login = (props) => (
   <div className="login">
-    <a href="/api/user/auth/github">Log In with Github</a>
+    <a href="/auth/github">Log In with Github</a>
   </div>
 );
 

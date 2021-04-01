@@ -27,7 +27,10 @@ module.exports = {
     //port: 8080,
     publicPath: '/build',
     proxy: {
-      '/api': 'http://localhost:3000'
+      '/api': 'http://localhost:3000',
+      '/user': 'http://localhost:3000',
+      '/auth': 'http://localhost:3000',
+      '/test': 'http://localhost:3000',
     }
   }
 }

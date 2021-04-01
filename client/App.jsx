@@ -14,13 +14,12 @@ import CreateCharacter from './components/CreateCharacter';
 class App extends Component {
   constructor(props) {
     super(props);
-    console.log(Cookies.get('ssid'));
+    //console.log(Cookies.get('ssid'));
   }
 
   render() {
     return(
       <div>
-        hello from banana-town (react)
         <MainContainer/>
       </div>
     );
