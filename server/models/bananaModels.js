@@ -27,7 +27,7 @@ const noteSchema = new Schema({
   author_id: { type: String, required: true }, // Schema.Types.ObjectId
   title: String,
   tags: String,
-  content: { type: String, required: true },
+  content: { type: String, default: '' },
   created_at: { type: Date, default: Date.now },
   modified_at: { type: Date, default: Date.now },
 });

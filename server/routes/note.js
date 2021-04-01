@@ -19,13 +19,15 @@ router.get('/all/:author_id',
 );
 
 
-// post to create a new note
+// @desc    create a new note
+// @url     POST /api/note
 router.post('/',
   noteController.createNote,
   (req, res) => res.status(200).json(res.locals)
 )
 
-// patch to update an existing note
+// @desc    update a note by its id
+// @url     PATCH /api/note/:id
 router.patch('/:id',
   noteController.updateNote,
   (req, res) => res.status(200).json(res.locals)

@@ -26,13 +26,14 @@ noteController.getNotesByAuthor = (req, res, next) => {
 noteController.createNote = (req, res, next) => {
   const newNote = { 
     content: req.body.content, 
-    title: req.body.title, 
     author_id: req.body.author_id, 
     tags: req.body.tags
   };
+  console.log(newNote);
   const note = new Note(newNote);
   note.save()
     .then(data => {
+      console.log(data);
       res.locals = data;
       next();
     })
@@ -47,6 +48,7 @@ noteController.createNote = (req, res, next) => {
 }
 
 noteController.updateNote = (req, res, next) => {
+  //console.log(req.body);
   const noteId = req.params.id.toString();
   const updatedNote = { 
     content: req.body.content, 
@@ -64,6 +66,8 @@ noteController.updateNote = (req, res, next) => {
       next({err});
     }
   });
+
+  //next();
 }
 
 noteController.deleteNote = (req, res, next) => {
