@@ -3,6 +3,7 @@ import Login from "../components/Login.jsx";
 import Logout from "../components/Logout.jsx";
 import NoteList from "../components/NoteList.jsx";
 import Note from "../components/Note.jsx";
+import NoteMarkdown from "../components/NoteMarkdown.jsx";
 
 //import { connect } from 'react-redux';
 
@@ -23,7 +24,9 @@ class MainContainer extends Component {
       editLast: Date.now(),
       lastNoteUpdated: -1,
       currentNoteOpen: -1,
-      justOpened: true
+      justOpened: true,
+      markdownView: false,
+      dataTheme: 'light'
     };
     this.createNote = this.createNote.bind(this);
     this.selectNote = this.selectNote.bind(this);
@@ -31,7 +34,11 @@ class MainContainer extends Component {
     this.prepNotesForState = this.prepNotesForState.bind(this);
     this.makeTitleAndPreview = this.makeTitleAndPreview.bind(this);
     this.apiCallUpdateNote = this.apiCallUpdateNote.bind(this);
+    this.apiCallDeleteNote = this.apiCallDeleteNote.bind(this);
     this.deleteNoteClickHandler = this.deleteNoteClickHandler.bind(this);
+    this.toggleMarkdownView = this.toggleMarkdownView.bind(this);
+    this.toggleDataTheme = this.toggleDataTheme.bind(this);
+    this.textareaRef = React.createRef();
   }
 
   componentDidMount() {
@@ -56,6 +63,7 @@ class MainContainer extends Component {
     //  })
     //  .catch((err) => {
     //  });
+    //this.textareaRef.current.focus();
   }
 
   prepNotesForState(notes) {
@@ -81,9 +89,9 @@ class MainContainer extends Component {
     //console.log(this.state.note);
     const rightNow = Date.now();
     if (rightNow - this.state.editLast > this.state.editBufferInSeconds * 1000) {
-      console.log('... Triggering PATCH');
-      // check if last note open id isnt -1, proceed if true
-      if (true) {
+      // proceed only if there is a valid _id in state.note
+      if (this.state.note._id) {
+        console.log('... Triggering PATCH');
         fetch(`/api/note/${this.state.note._id}`,{
           method: 'PATCH',
           body: JSON.stringify({ 
@@ -104,6 +112,7 @@ class MainContainer extends Component {
     } else {
       console.log('... its too soon');
     }
+    
   } 
 
   apiCallUpdateNote(note) {
@@ -127,8 +136,23 @@ class MainContainer extends Component {
     }
   }
 
+  apiCallDeleteNote(id) {
+    fetch(`/api/note/${id}`,{
+      method: 'DELETE'
+    })
+      .then(result => {
+        this.setState({ editLast: Date.now() });
+        return result;
+      })
+      .catch(err => console.log(err) );
+  }
+
   createNote() {
     console.log('invoking createNewNote');
+    // first, lets save the current note if we have one open
+    if (this.state.note.hasOwnProperty('content')) {
+      this.apiCallUpdateNote(this.state.note);
+    }
     // fetch a create new now post to api
     const newNote = {
       author_id: this.state.author_id,
@@ -148,10 +172,11 @@ class MainContainer extends Component {
         const newNotes = [...this.state.notes];
         newNotes.unshift(data);
         //console.log(newNotes);
-        this.setState({ notes: newNotes });
+        // update state with whats returned
+        this.setState({ notes: newNotes, note: data });
       })
       .catch(err => { console.log('error creating new note')})
-    // update state with whats returned
+    // Make new note selected
   }
 
   makeTitleAndPreview(content) {
@@ -171,8 +196,7 @@ class MainContainer extends Component {
   }
 
   selectNote(e) {
-    console.log(`...invoked selectNote, e.target.id = ${e.target.id}`);
-    
+    //console.log(`...invoked selectNote, e.target.id = ${e.target.id}`);
     //lastNoteUpdated: -1,
     //currentNoteOpen: -1
     // update state
@@ -180,15 +204,17 @@ class MainContainer extends Component {
     let currentNoteOpen = this.state.currentNoteOpen;
     for (const key in this.state.notes) {
       //console.log(`looking for the note to edit by key - ${key}`);
-      //console.log(this.state.notes[key]._id);
+      //console.log(`e.target.id is ${e.target.id}, and this.state.notes[key]._id si ${this.state.notes[key]._id}`);
+      //console.log(`and the truthiness bw these two is ${e.target.id === this.state.notes[key]._id }`);
       if (e.target.id === this.state.notes[key]._id) {
-        console.log(`...from selectNote: we are editing this note ${this.state.notes[key]}`);
+        //console.log(`...from selectNote: we are editing this note ${this.state.notes[key]}`);
         editThisNote = this.state.notes[key];
         currentNoteOpen = parseInt(key);
         //console.log(editThisNote.title);
         break;
       }
     }
+    //console.log(`currentNoteOpen is ${currentNoteOpen} and this.state.currentNoteOpen is ${this.state.currentNoteOpen}`);
     if (currentNoteOpen !== this.state.currentNoteOpen) {
       // send an API update for the note we are leaving to make sure it gets saved.
       this.apiCallUpdateNote(this.state.note);
@@ -197,7 +223,37 @@ class MainContainer extends Component {
   }
 
   deleteNoteClickHandler(e) {
+    console.log('..... hello from deleteNoteClickHandler');
+    //console.log(e.target.id);
+    // set note to empty {} in state.
+    const note = {};
+    // rebuild state notes, ommiting target id
+    const newNotes = [];
+    for (const key in this.state.notes) {
+      if (e.target.id !== this.state.notes[key]._id) {
+        newNotes.push(this.state.notes[key]);
+      }
+    }
+    // setstate 
+    this.setState({ note: note, notes: newNotes, currentNoteOpen: -1 })
+    // do delete fetch
+    this.apiCallDeleteNote(e.target.id);
+  }
 
+  toggleMarkdownView() {
+    if( this.state.markdownView === false ) {
+      this.setState({ markdownView: true });
+    } else {
+      this.setState({ markdownView: false });
+    }
+  }
+
+  toggleDataTheme() {
+    if (this.state.dataTheme === 'light') {
+      this.setState({ dataTheme: 'dark' });
+    } else {
+      this.setState({ dataTheme: 'light' });
+    }
   }
 
   render(props) {
@@ -216,29 +272,43 @@ class MainContainer extends Component {
       }
       noteList.push(
         <div
+          role='button'
           className={classes}
           id={this.state.notes[k]._id}
           key={this.state.notes[k]._id}
           onClick={this.selectNote}
         >
           {title}
-          <div className="preview">{preview}</div>
+          <div className="preview" id={this.state.notes[k]._id} onClick={this.selectNote}>{preview}</div>
         </div>);
     }
     // Here is where we are checking state for a note to be editing.
     let note = '';
+    let markdownVersion = '';
     if (this.state.note.hasOwnProperty('content')) {
-      note = <Note note={this.state.note} onChange={this.changedNote} />;
+      note = <Note
+              note={this.state.note}
+              onChange={this.changedNote}
+              deleteHandler={this.deleteNoteClickHandler}
+              toggleMarkdownView={this.toggleMarkdownView}
+              textareaRef={this.textareaRef}
+              />;
+      markdownVersion = <NoteMarkdown
+              markdownView={this.state.markdownView}
+              toggleMarkdownView={this.toggleMarkdownView}
+              note={this.state.note}
+              />;
     }
     return(
-      <div className="grid-container">
+      <div data-theme={this.state.dataTheme} className="grid-container">
         <div className="sidebar">
           {/*<h1 id="header">Banana</h1>
           <Login />
           <Logout />*/}
-          <NoteList createNote={this.createNote} notes={noteList}/>
+          <NoteList createNote={this.createNote} toggleDataTheme={this.toggleDataTheme} notes={noteList}/>
         </div>
         {note}
+        {markdownVersion}
       </div>
     );
   }

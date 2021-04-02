@@ -4,7 +4,8 @@ const NoteList = (props) => {
   //console.log(props.notes);
   return (
   <div className="note-list">
-    <button onClick={props.createNote}>Create New Note</button>
+    <div id="banana" onClick={props.toggleDataTheme}>🍌 </div>
+    <button id="create-note" onClick={props.createNote}>new note</button>
     {/*<div>Here is our list of notes</div>*/}
     {props.notes}
   </div>

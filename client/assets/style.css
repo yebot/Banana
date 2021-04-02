@@ -1,9 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Montserrat:wght@400;600&family=Space+Mono&display=swap');
 
+[data-theme="light"] {
+  --highlight-color: #e9f3fe;
+  --highlight-color-background: #89c2ff;
+  --font-color: #262626;
+  --chill-font-color: #666666;
+  --bg-color: #F9F9F9;
+  --darker-bg-color: #eeeeee;
+  --border-color: #BFBFBF;
+}
+
+[data-theme="dark"] {
+  --highlight-color: #09488b;
+  --highlight-color-background: #1988ff;
+  --font-color: #e4e4e4;
+  --chill-font-color: #8f8f8f;
+  --bg-color: #333333;
+  --darker-bg-color: #272727;
+  --border-color: #494949;
+}
 
 
+a {
+  color: var(--highlight-color-background);
+}
 .grid-container {
   display: grid;
+  background-color: var(--bg-color);
   grid-template-columns: 25% 75%;
   grid-template-rows: 100%;
   gap: 0px 0px;
@@ -13,32 +36,36 @@
 
 .sidebar {
   grid-area: sidebar;
-  border-right: 1px solid #BFBFBF;
-  background-color: #eeeeee;
+  border-right: 1px solid var(--border-color);
+  background-color: var(--darker-bg-color);
   height: 100vh;
+  overflow: scroll;
 }
 .editor { 
   grid-area: editor;
   height: 100vh;
 }
-
+.note-list {
+  
+}
 div.note-list:last-child { 
-  border-bottom: 1px solid #BFBFBF;
+  border-bottom: 1px solid var(--border-color);
 }
 
 body {
   font-family: 'Montserrat', sans-serif;
-  background-color: #F9F9F9;
-  color: #262626;
+  background-color: var(--bg-color);
+  color: var(--font-color);
   margin: 0;
   padding: 0;
 }
 
 .note-in-list {
   padding: .8em;
-  border-top: 1px solid #BFBFBF;
-  border-left: 4px solid #F9F9F9;
-  background-color: #F9F9F9;
+  border-top: 1px solid var(--border-color);
+  border-left: 4px solid var(--bg-color);
+  background-color: var(--bg-color);
+  color: var(--font-color);
   font-weight: 600;
   height: 34px;
   overflow: hidden;
@@ -49,7 +76,6 @@ body {
   cursor: default;
 }
 .note-in-list * {
-  pointer-events: none
 }
 .preview {
   font-size: .8em;
@@ -66,16 +92,18 @@ body {
 textarea.editor {
   font-family: 'Crimson Pro', serif;
   font-size: 1.3em;
-  background-color: #F9F9F9;
-  border: 0px solid #F9F9F9;
+  color: var(--font-color);
+  background-color: var(--bg-color);
+  border: 0px solid var(--border-color);
   padding: 1em 2em;
+  height: 100vh;
 }
 textarea.editor:focus {
   outline-width: 0;
 }
 .selected {
-  background-color: #e9f3fe;
-  border-left: 4px solid #89c2ff;
+  background-color: var(--highlight-color);
+  border-left: 4px solid var(--highlight-color-background);
 }
 .code {
   font-family: 'Space Mono', monospace;
@@ -83,7 +111,7 @@ textarea.editor:focus {
 
 .three-dot-menu {
   position: absolute;
-  color: #666666;
+  color: var(--chill-font-color);
   top: 10px;
   right: 10px;
   height: 30px;
@@ -93,17 +121,77 @@ textarea.editor:focus {
   padding-top: 4px;
 
 }
-.three-dot-menu:hover {
-  cursor: default;
-}
+
 .three-dot-menu-items {
   /*display: none;*/
   position: absolute;
-  color: #666666;
-  top: 40px;
+  color: var(--chill-font-color);
+  top: 10px;
   right: 10px;
   text-align: right;
 }
 .three-dot-menu-items div {
-  margin: 10px 3px;
+  padding: 6px 0px;
+}
+
+button#create-note  {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--chill-font-color);
+  background-color: var(--bg-color);
+  border: 0px solid var(--border-color);
+  padding: 5px;
+  width: 100%;
+}
+button#create-note:focus {
+  outline-width: 0;
+}
+
+.markdown-preview-container {
+  /*display: none;*/
+  background-color: var(--darker-bg-color);
+  /*opacity: 95%;*/
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  z-index: 2;
+}
+.markdown-preview {
+  background-color: var(--bg-color);
+  font-family: 'Crimson Pro', serif;
+  font-size: 120%;
+  color: var(--font-color);
+  margin: 0px auto 0px auto;
+  padding: 2em 2em 2em 2em;
+  /*position: absolute;*/
+  border-left: 2px solid var(--border-color);
+  border-right: 2px solid var(--border-color);
+  width: 60%;
+  height: 100vh;
+  z-index: 3;
+}
+#markdown-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+button#markdown-close {
+  font-size: 100%;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--chill-font-color);
+  border: 1px solid var(--border-color);
+  padding: 5px;
+}
+
+.sidebar::-webkit-scrollbar {
+  border: 3px;
+  display: none;
+}
+
+.displaynone {
+  display: none;
+}
+#banana {
+  position: absolute;
+  top: 0px;
+  left: 13px;
 }

@@ -9,15 +9,15 @@ noteController.getNotes = (req, res, next) => {
 
 
 noteController.getNotesByAuthor = (req, res, next) => {
-  console.log('we are in noteController.getNotesByAuthor');
-  console.log(req.params.author_id);
+  console.log('retreiving all notes in noteController.getNotesByAuthor');
+  //console.log(req.params.author_id);
   const filter = { author_id: req.params.author_id };
   try {
     Note.find(filter, function (err, docs) {
       //res.status(200).json(docs);
       res.locals = docs;
       next();
-    });
+    }).sort( { "modified_at": -1 } );
   } catch (err) {
     next({err: err});
   }

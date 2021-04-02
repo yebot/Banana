@@ -3,11 +3,19 @@ import ThreeDotMenu from "../components/ThreeDotMenu.jsx";
 
 
 const Note = (props) => {
-  //console.log();
   return (
     <>
-      <textarea className="editor" onChange={props.onChange} value={props.note.content} id={props.note._id}></textarea>
-      <ThreeDotMenu />
+      <textarea
+        autoFocus 
+        className="editor"
+        onChange={props.onChange}
+        value={props.note.content}
+        id={props.note._id}>
+      </textarea>
+      <ThreeDotMenu 
+        deleteHandler={props.deleteHandler}
+        toggleMarkdownView={props.toggleMarkdownView}
+        id={props.note._id} />
     </>
   )};
 

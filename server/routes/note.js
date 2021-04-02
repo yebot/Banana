@@ -33,7 +33,8 @@ router.patch('/:id',
   (req, res) => res.status(200).json(res.locals)
 )
 
-// delete a note
+// @desc    delete a note by its id
+// @url     DELETE /api/note/:id
 router.delete('/:id',
   noteController.deleteNote,
   (req, res) => res.status(200).json(res.locals)
