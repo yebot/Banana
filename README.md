@@ -1,3 +1,3 @@
-# banana - a notes app
+# Banana
 
-because all need another notes app
+_Because we all need another notes app._
